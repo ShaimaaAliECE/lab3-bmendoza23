@@ -1,0 +1,22 @@
+{
+  "name": "lab3-bmendoza23",
+  "version": "1.0.0",
+  "description": "bmendoz2-SE3316-Lab3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaimaaAliECE/lab3-bmendoza23.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShaimaaAliECE/lab3-bmendoza23/issues"
+  },
+  "homepage": "https://github.com/ShaimaaAliECE/lab3-bmendoza23#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
