@@ -1,3 +1,8 @@
+/* 
+    Handles working with the database 
+    Some methods are commented out due to this being used in during my workflow
+*/
+
 const mysql = require('mysql'); 
 
 let conn = mysql.createConnection({
@@ -10,7 +15,7 @@ let conn = mysql.createConnection({
 
 conn.connect();
 
-
+/*
 //Creating Availability Table
 conn.query(`CREATE TABLE Availability
             (
@@ -26,7 +31,7 @@ conn.query(`CREATE TABLE Availability
                     console.log('Table Created');
             }
 );
-
+*/
 
 /*
 //Drops Availability Table
@@ -53,7 +58,7 @@ conn.query( `INSERT INTO Availability values ("Admin",CURRENT_TIME(),'["9:00","1
 //Updates Table to add times
 conn.query(`UPDATE Availability 
             SET LastUpdate = CURRENT_TIME(),
-                TimesAvailable = '{"09:00":true, "10:00":true, "11:00":true, "12:00":false, "13:00":true, "14:00":true, "15:00":true, "16:00":true, "17:00":true, "18:00":true}' where Name = "Brandon"
+                TimesAvailable = '{"09:00":true, "10:00":true, "11:00":true, "12:00":false, "13:00":true, "14:00":true, "15:00":true, "16:00":true, "17:00":true, "18:00":true}' where Name = "Admin"
         `
             ,(err,rows,fields) => {
                 if (err)
@@ -77,3 +82,4 @@ conn.query(`SELECT * from Availability`
                 console.log("Current admin posted admin availability")
                 console.log(rows);
             });
+            

@@ -14,7 +14,7 @@ doodle.use(express.urlencoded({
         extended: true
 }));
 
-//Admin Page Login
+//Handles admin page
 doodle.post('/admin', (req, res) => {
 
     //Validates login information
@@ -24,8 +24,8 @@ doodle.post('/admin', (req, res) => {
         let conn = newConnection();
         conn.connect();
 
-        //Content of Admin Page Login
-        let content = '<div><div>Doodle App - Admin Portal (Please save availability and time changes seperatly)</div>'
+        //Content of Admin Page
+        let content = '<div><div><h2>Doodle App - Admin Portal</h2> (Please save availability and time changes seprately)</div>'
                     +'<table style="min-width: 100vw; padding: 5px 15px">';  
             
         conn.query(`SELECT Name, TimesAvailable
@@ -42,7 +42,7 @@ doodle.post('/admin', (req, res) => {
                             rows.shift();
                     
                             content +='<table style="min-width: 100vw; padding: 5px 15px">'
-                                    +'<form action="/admin/time" method="post" style="display:table-header-group; vertical-align: middle; border-color: inherit">'
+                                    +'<form action="/admin/timechanged" method="post" style="display:table-header-group; vertical-align: left">'
                                     +'<tr>'
                                     +'<th>Name</th>';
                             
@@ -57,10 +57,10 @@ doodle.post('/admin', (req, res) => {
                             content +='</tr>'
                                 +'<tr>'
                                 +'<th></th>'
-                                +'<th colspan="10"><button type="submit" id="save-times-btn">Save Changes</button></th>'
+                                +'<th colspan="10"><button type="submit" id="save-times-btn">Save Time Slot Changes</button></th>'
                                 +'</tr>'
                                 +'</form>'
-                                +'<form action="/admin/availability" method="post">';
+                                +'<form action="/admin/availabilitychanged" method="post">';
 
                             //Rows added to displayed table for each user
                             for(r of rows) { 
@@ -72,15 +72,15 @@ doodle.post('/admin', (req, res) => {
                                 for(var i = 0; i < adminTimes.length; i++){ // Iterating over adminTimes length
                                     // Checks what availability is set to 
                                     if(times[`${adminTimes[i]}`]) { 
-                                        content += '<td style="text-align: center"><input type="checkbox" id="' + r.Name + 'Box' + i + '" name="' + r.Name + 'Box' + i + '" checked="checkced"></td>';
+                                        content += '<td style="text-align: left"><input type="checkbox" id="' + r.Name + 'Box' + i + '" name="' + r.Name + 'Box' + i + '" checked="checkced"></td>';
                                     } else {
-                                        content += '<td style="text-align: center"><input type="checkbox" id="' + r.Name + 'Box' + i + '" name="' + r.Name + 'Box' + i + '"></td>'; 
+                                        content += '<td style="text-align: left"><input type="checkbox" id="' + r.Name + 'Box' + i + '" name="' + r.Name + 'Box' + i + '"></td>'; 
                                     }
                                 }
                                 content += '</tr>';
                             }
                             
-                            // Adds save availability  btn for the save avail post form
+                            // Adds save availability changes btn for the save avail post form
                             content +='<tr>'
                                     +'<th></th>'
                                     +'<th colspan="10"><button type="submit" id="save-avail-btn">Save Availability Changes</button></th>'
@@ -98,11 +98,11 @@ doodle.post('/admin', (req, res) => {
 });
 
 //Handles changing of availability
-doodle.post('/admin/availability', (req, res) => {
+doodle.post('/admin/availabilitychanged', (req, res) => {
     let times = [];         // Reference to times admin saves in database
     let users = [];         // Users' name + availability
     let updates = [];       // Stores updates to users aray
-    let updateStr = `Update Availability Set LastUpdate = CURRENT_TIME(), TimesAvailable = (case Name `; //String for UPDATE query
+    let updateStr = `Update Availability Set LastUpdate = CURRENT_TIME(), TimesAvailable = (case Name `; //Unfinished String for UPDATE query
 
     let conn = newConnection();
     conn.connect();
@@ -149,7 +149,7 @@ doodle.post('/admin/availability', (req, res) => {
                                 console.log(err);
                                 res.send("Error, update failed");
                             } else {
-                                res.send('DB Updated');
+                                res.send('Time changes updated in database. Go back to view changes.');
                             }
                         })
                     } else {
@@ -161,8 +161,8 @@ doodle.post('/admin/availability', (req, res) => {
     })
 });
 
-//Handles changes to admin-posted time slots
-doodle.post('/admin/time', (req, res) => {
+//Handles change to admin-posted time slots
+doodle.post('/admin/timechanged', (req, res) => {
     let newTimes = [];              //Holds new time values
     let duplicateError = false;     //Boolean, keeps track  of a duplicate value being set
 
@@ -202,7 +202,7 @@ doodle.post('/admin/time', (req, res) => {
 doodle.get('/guest', (req, res) => {
     let conn = newConnection();
     conn.connect();
-    let content = '<div><div>Doodle App</div>';
+    let content = '<div><h3>Doodle App<h3></div>';
 
     //Query selects all names in database, admin displayed first then sorts list alphabetically
     conn.query( `select Name, TimesAvailable from Availability order by Name, case Name when "Admin" then '1' else '2' end`
@@ -264,7 +264,7 @@ doodle.get('/guest', (req, res) => {
 
 //Handles guest availability registration 
 doodle.post('/guest/register', (req, res) => { 
-    // Makes sure guest name is not included in database
+    //In the case that the guest names table is empty 
     if(req.body.otherNames == null)
     {
         let conn = newConnection();
@@ -289,6 +289,7 @@ doodle.post('/guest/register', (req, res) => {
                 });
         conn.end(); 
     }
+    //Makes sure no duplicated guest name
     else if (!(req.body.otherNames).includes(req.body.guestName)) {
         let conn = newConnection();
         conn.connect();
