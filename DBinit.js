@@ -10,11 +10,12 @@ let conn = mysql.createConnection({
 
 conn.connect();
 
+
 //Creating Availability Table
 conn.query(`CREATE TABLE Availability
             (
                 Name varchar(100) NOT NULL PRIMARY KEY,
-                LastUpdate      timestamp
+                LastUpdate      timestamp,
                 TimesAvailable  json
             )            
             `
@@ -24,7 +25,8 @@ conn.query(`CREATE TABLE Availability
                 else
                     console.log('Table Created');
             }
-)
+);
+
 
 /*
 //Drops Availability Table
@@ -38,11 +40,20 @@ conn.query(`DROP TABLE Availability`,
         );
 */
 
-/*
-//Updates Table
+
+conn.query( `INSERT INTO Availability values ("Admin",CURRENT_TIME(),'["9:00","10:00","11:00","12:00","13:00","14:00", "15:00", "16:00", "17:00", "18:00"]')`
+            , (err,rows,fields) => {
+                if (err)
+                    console.log(err);
+                else
+                    console.log('Availability times inserted');
+            });     
+       
+
+//Updates Table to add times
 conn.query(`UPDATE Availability 
-            set LastUpdate = CURRENT_TIME(),
-            TimesAvailable = '{"09:00":true, "10:00":true, "11:00":true, "12:00":false, "13:00":true, "14:00":true, "15:00":true, "16:00":true, "17:00":true, "18:00":true}' where Name = "Brandon"
+            SET LastUpdate = CURRENT_TIME(),
+                TimesAvailable = '{"09:00":true, "10:00":true, "11:00":true, "12:00":false, "13:00":true, "14:00":true, "15:00":true, "16:00":true, "17:00":true, "18:00":true}' where Name = "Brandon"
         `
             ,(err,rows,fields) => {
                 if (err)
@@ -51,8 +62,9 @@ conn.query(`UPDATE Availability
                     console.log('One row inserted');
             }
             );
-*/
 
+
+//Selecting all information from availability
 conn.query(`SELECT * from Availability`
             ,(err,rows,fields) => {
                 let avail = [];
@@ -62,5 +74,6 @@ conn.query(`SELECT * from Availability`
                 else
                     console.log('One row selected');
 
+                console.log("Current admin posted admin availability")
                 console.log(rows);
             });
