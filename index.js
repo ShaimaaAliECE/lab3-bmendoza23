@@ -318,4 +318,4 @@ doodle.post('/guest/register', (req, res) => {
 });
 
 
-doodle.listen(5000); //Hosting on port 5000
+doodle.listen(80); //Hosting on port 80
